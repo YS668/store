@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sms.common.QueryPageParam;
 import com.sms.common.Result;
+import com.sms.common.utils.RedisUtil;
+import com.sms.entity.MailRequest;
 import com.sms.entity.Menu;
 import com.sms.entity.User;
 import com.sms.service.MenuService;
@@ -109,6 +111,33 @@ public class UserController {
         List list = userService.lambdaQuery()
                 .eq(User::getNo,user.getNo())
                 .eq(User::getPassword,user.getPassword())
+                .list();
+        if (list.size() > 0 ){
+            User us = (User) list.get(0);
+            List<Menu> menuList = menuService.lambdaQuery().like(Menu::getMenuright, us.getRoleId()).list();
+            HashMap res = new HashMap();
+            res.put("user",us);
+            res.put("menu",menuList);
+            return Result.suc(res);
+        }
+
+        return Result.fail();
+    }
+
+    @PostMapping("/code/login")
+    public Result codeLogin(@RequestBody MailRequest mailRequest){
+        //用户邮箱
+        String mail = mailRequest.getSendTo();
+        String code = RedisUtil.getCode(mail);
+        if (code ==null || "".equals(code)){
+            return Result.fail(RedisUtil.CODE_EXPIRE);
+        }
+        if ( !code.equals( mailRequest.getCode() ) ){
+            return Result.fail(RedisUtil.CODE_WRONG);
+        }
+
+        List list = userService.lambdaQuery()
+                .eq(User::getMail,mail)
                 .list();
         if (list.size() > 0 ){
             User us = (User) list.get(0);

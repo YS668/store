@@ -59,6 +59,22 @@
             <artifactId>spring-boot-starter-swagger</artifactId>
             <version>1.5.1.RELEASE</version>
         </dependency>
+
+        <!--邮件依赖-->
+        <!-- springboot 邮件mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>2.2.6.RELEASE</version>
+        </dependency>
+
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>

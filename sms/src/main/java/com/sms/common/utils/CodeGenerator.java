@@ -1,4 +1,4 @@
-package com.sms.common;
+package com.sms.common.utils;
 
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
