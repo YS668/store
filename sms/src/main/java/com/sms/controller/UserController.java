@@ -55,6 +55,10 @@ public class UserController {
     //新增
     @PostMapping("/save")
     public Result save(@RequestBody User user){
+        List<User> list = userService.lambdaQuery().eq(User::getMail, user.getMail()).list();
+        if (list.size() > 0){
+            return Result.fail(Result.MAIL_REPEAT);
+        }
         return userService.save(user)?Result.suc(null):Result.fail();
     }
 

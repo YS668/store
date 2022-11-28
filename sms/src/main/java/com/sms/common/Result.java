@@ -14,6 +14,8 @@ public class Result {
 
     private static final long ZERO  = 0L;
 
+    public static final String MAIL_REPEAT  = "存在相同的邮箱";
+
     //编码
     private int code;
     //成功或者失败
