@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
-@Component //项目运行时就注入Spring容器
+@Component
 public class RedisUtil {
 
     @Resource

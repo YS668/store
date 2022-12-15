@@ -12,6 +12,9 @@ public class Result {
     private static final int SUC_CODE = 200;
     private static final String SUC_MSG = "成功";
 
+    private static final int TOKEN_ERROR_CODE = 401;
+    private static final String TOKEN_ERROR_MSG = "请重新登录";
+
     private static final long ZERO  = 0L;
 
     public static final String MAIL_REPEAT  = "存在相同的邮箱";
@@ -24,6 +27,10 @@ public class Result {
     private Long total;
     //数据
     private Object data;
+
+    public static Result tokenError(){
+        return result(Result.TOKEN_ERROR_CODE,Result.TOKEN_ERROR_MSG,Result.ZERO,null);
+    }
 
     public static Result fail(){
         return result(Result.FAIL_CODE,Result.FAIL_MSG,Result.ZERO,null);

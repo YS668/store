@@ -2,8 +2,8 @@ package com.sms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sms.common.Result;
-import com.sms.common.utils.CodeUtil;
 import com.sms.common.utils.RedisUtil;
+import com.sms.common.utils.SaltUtil;
 import com.sms.entity.MailRequest;
 import com.sms.entity.User;
 import com.sms.service.SendMailService;
@@ -51,7 +51,7 @@ public class SendMailServiceImpl implements SendMailService {
             return Result.fail(MailRequest.USER_NOT);
         }
         //随机验证码
-        String code = CodeUtil.getCode();
+        String code = SaltUtil.getSalt(6);
         SimpleMailMessage message = new SimpleMailMessage();
         //邮件发送人
         message.setFrom(sendMailer);
@@ -64,7 +64,6 @@ public class SendMailServiceImpl implements SendMailService {
         //邮件发送时间
         message.setSentDate(new Date());
         //发送
-        int i = 10/0;
         javaMailSender.send(message);
         //缓存验证码
         RedisUtil.setCode(mailRequest.getSendTo(),code);

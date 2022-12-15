@@ -3,6 +3,7 @@ package com.sms.mapper;
 import com.sms.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -15,4 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
+    User getByNo(@Param("userNo") String userNo);
+
+    User getByMail(@Param("mail")String mail);
 }
