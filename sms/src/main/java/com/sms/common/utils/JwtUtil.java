@@ -12,7 +12,7 @@ import java.util.*;
 
 public class JwtUtil {
     // 过期时间 7 天  604800
-    private static final long EXPIRE_TIME =10;
+    private static final long EXPIRE_TIME = 60*60*24*7;
     //密钥
     private static final String SECRET  = "1sf12sds21ie1inecs078j";
 
@@ -55,7 +55,7 @@ public class JwtUtil {
         try {
             DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
             Date expiresAt = verify.getExpiresAt();
-            return expiresAt.before(new Date());
+            return expiresAt.after(new Date());
         }catch (Exception e){
             e.printStackTrace();
             return false;

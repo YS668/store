@@ -151,9 +151,9 @@ public class UserController {
             Result fail = Result.fail();
             fail.setMsg("账号不存在");
             return fail;
-        } catch (IncorrectCredentialsException e) {
+        } catch (AuthenticationException e) {
             Result fail = Result.fail();
-            fail.setMsg("密码错误");
+            fail.setMsg("账号或密码错误");
             return fail;
         }
         List<Menu> menuList = menuService.lambdaQuery().like(Menu::getMenuright, userInfo.getRoleId()).list();
