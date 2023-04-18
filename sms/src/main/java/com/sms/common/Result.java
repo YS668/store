@@ -40,6 +40,10 @@ public class Result {
         return result(Result.FAIL_CODE,msg,Result.ZERO,null);
     }
 
+    public static Result suc(){
+        return result(Result.SUC_CODE,Result.SUC_MSG,Result.ZERO,null);
+    }
+
     public static Result suc(Object data){
         return result(Result.SUC_CODE,Result.SUC_MSG,Result.ZERO,data);
     }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sms.mapper.ApplicationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sms.entity.Application">
+        <id column="id" property="id" />
+        <result column="customer_id" property="customerId" />
+        <result column="inventory" property="inventory" />
+        <result column="count" property="count" />
+        <result column="user_id" property="userId" />
+        <result column="apply_time" property="applyTime" />
+        <result column="approval_status" property="approvalStatus" />
+        <result column="approver_id" property="approverId" />
+        <result column="approval_time" property="approvalTime" />
+        <result column="remarks" property="remarks" />
+        <result column="response" property="response" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, customer_id, user_id, apply_time, approval_status, approver_id, approval_time, remarks
+    </sql>
+
+</mapper>

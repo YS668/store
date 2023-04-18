@@ -2,10 +2,9 @@ package com.sms.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,16 +12,16 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 
+ * 入库表
  * </p>
  *
  * @author sms
- * @since 2022-11-11
+ * @since 2023-04-17
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Goods对象", description="")
-public class Goods implements Serializable {
+@ApiModel(value="InRec对象", description="入库表")
+public class InRec implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,21 +29,28 @@ public class Goods implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @ApiModelProperty(value = "货名")
-    private String name;
+    @ApiModelProperty(value = "货品id")
+    private Integer goods;
 
-    @ApiModelProperty(value = "分类")
+    @ApiModelProperty(value = "货品名称")
+    @TableField("goodName")
+    private String goodname;
+
+    @ApiModelProperty(value = "货品类别id")
     @TableField("goodsType")
     private Integer goodstype;
+
+    @ApiModelProperty(value = "仓库id")
+    @TableField("storage")
+    private Integer storage;
+
+    @ApiModelProperty(value = "管理人id")
+    private Integer adminId;
 
     @ApiModelProperty(value = "数量")
     private Integer count;
 
-    @ApiModelProperty(value = "图片地址")
-    @TableField("imageUrl")
-    private String imageUrl;
-
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "操作时间")
     private LocalDateTime createtime;
 
     @ApiModelProperty(value = "备注")

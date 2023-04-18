@@ -1,23 +1,19 @@
 package com.sms.controller;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sms.common.QueryPageParam;
 import com.sms.common.Result;
-import com.sms.entity.Goods;
-import com.sms.entity.Record;
-import com.sms.service.GoodsService;
-import com.sms.service.RecordService;
-import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
+import com.sms.entity.*;
+import com.sms.entity.response.RecordResponse;
+import com.sms.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
  * <p>
@@ -31,74 +27,140 @@ import java.util.List;
 @RequestMapping("/record")
 public class RecordController {
 
-    @Resource
-    private RecordService recordService;
-
-    @Resource
+    @Autowired
+    private InRecService inRecService;
+    @Autowired
+    private OutRecService outRecService;
+    @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private GoodstypeService goodstypeService;
+    @Autowired
+    private StorageService storageService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private CustomerService customerService;
 
-    @GetMapping("/all")
-    public Result all(){
-        List<Record> list = recordService.list();
-        return Result.suc(list);
+    @PostMapping("/page/in")
+    public Result inPage(@RequestBody QueryPageParam param){
+
+        Page<InRec> page = new Page<>();
+        page.setSize(param.getPageSize());
+        page.setCurrent(param.getPageNum());
+
+        HashMap map = param.getParam();
+        String name = (String) map.get("name");
+        String goodsType = (String) map.get("goodstype");
+        String storage = (String) map.get("storage");
+        ArrayList date = (ArrayList) map.get("date");
+
+        LambdaQueryWrapper<InRec> wrapper = new LambdaQueryWrapper<>();
+        if ( name != null && !"".equals(name)){
+            wrapper.like(InRec::getGoodname,name);
+        }
+        if ( goodsType != null && !"".equals(goodsType)){
+            wrapper.like(InRec::getGoodstype,goodsType);
+        }
+        if ( storage != null && !"".equals(storage)){
+            wrapper.like(InRec::getStorage,storage);
+        }
+        if (!date.isEmpty() && date.size() >= 2){
+            wrapper.between(InRec::getCreatetime,
+                    date.get(0),
+                    date.get(1));
+        }
+
+        Page<InRec> res = inRecService.page(page, wrapper);
+
+
+        return Result.suc(res.getTotal(),res.getRecords().stream().map(this::toVo).collect(Collectors.toList()));
     }
 
-    @PostMapping("/page")
-    public Result listPage(@RequestBody QueryPageParam query){
-        HashMap param = query.getParam();
-        String name = (String)param.get("name");
-        String goodstype = (String)param.get("goodstype");
-        String storage = (String)param.get("storage");
-        String roleId = (String)param.get("roleId");
-        String userId = (String)param.get("userId");
+    @PostMapping("/page/out")
+    public Result outPage(@RequestBody QueryPageParam param){
+        Page<OutRec> page = new Page<>();
+        page.setSize(param.getPageSize());
+        page.setCurrent(param.getPageNum());
 
-        Page<Record> page = new Page();
-        page.setCurrent(query.getPageNum());
-        page.setSize(query.getPageSize());
+        HashMap map = param.getParam();
+        String name = (String) map.get("name");
+        String goodsType = (String) map.get("goodstype");
+        String storage = (String) map.get("storage");
+        ArrayList date = (ArrayList) map.get("date");
 
-        QueryWrapper<Record> queryWrapper = new QueryWrapper();
-        queryWrapper.apply(" a.goods=b.id and b.storage=c.id and b.goodsType=d.id ");
-
-        if("2".equals(roleId)){
-            // queryWrapper.eq(Record::getUserid,userId);
-            queryWrapper.apply(" a.userId= "+userId);
+        LambdaQueryWrapper<OutRec> wrapper = new LambdaQueryWrapper<>();
+        if ( name != null && !"".equals(name)){
+            wrapper.like(OutRec::getGoodname,name);
+        }
+        if ( goodsType != null && !"".equals(goodsType)){
+            wrapper.like(OutRec::getGoodstype,goodsType);
+        }
+        if ( storage != null && !"".equals(storage)){
+            wrapper.like(OutRec::getStorage,storage);
+        }
+        if (!date.isEmpty() && date.size() >= 2){
+            wrapper.between(OutRec::getCreatetime,
+                    date.get(0),
+                    date.get(1));
         }
 
-        if( name != null && !"null".equals(name)){
-            queryWrapper.like("b.name",name);
-        }
-        if( goodstype != null && !"".equals(goodstype)){
-            queryWrapper.eq("d.id",goodstype);
-        }
-        if( storage != null && !"".equals(storage)){
-            queryWrapper.eq("c.id",storage);
-        }
+        Page<OutRec> res = outRecService.page(page, wrapper);
 
-        IPage result = recordService.listPage(page,queryWrapper);
-        return Result.suc(result.getTotal(),result.getRecords());
-    }
-    //新增
-    @PostMapping("/save")
-    public Result save(@RequestBody Record record){
-        Goods goods = goodsService.getById(record.getGoods());
-        int temp = record.getCount();
-        int old = goods.getCount();
 
-        //出库
-        if("2".equals(record.getAction())){
-            //判断是否有足够的数量出库
-            if (temp > old){
-                return Result.fail("出库失败，出库的最大数量为"+old);
-            }
-            temp = -temp;
-            record.setCount(temp);
-        }
-
-        int num = goods.getCount() +temp;
-        goods.setCount(num);
-        goodsService.updateById(goods);
-
-        return recordService.save(record)?Result.suc(null):Result.fail();
+        return Result.suc(res.getTotal(),res.getRecords().stream().map(this::toVo).collect(Collectors.toList()));
     }
 
+
+    public RecordResponse toVo(InRec data){
+        RecordResponse vo = new RecordResponse();
+        vo.setId(data.getId());
+        vo.setGoodsName(data.getGoodname());
+        Storage storage = storageService.getById(data.getStorage());
+        if (storage != null){
+            vo.setStorageName(storage.getName());
+        }
+        Goodstype goodstype = goodstypeService.getById(data.getGoodstype());
+        if (goodstype != null){
+            vo.setGoodsTypeName(goodstype.getName());
+        }
+        User admin = userService.getById(data.getAdminId());
+        if (admin != null){
+            vo.setAdminName(admin.getName());
+        }
+        vo.setCount(data.getCount());
+        vo.setCreateTime(data.getCreatetime());
+        vo.setRemark(data.getRemark());
+        return vo;
+    }
+
+    public RecordResponse toVo(OutRec data){
+        RecordResponse vo = new RecordResponse();
+        vo.setId(data.getId());
+        vo.setGoodsName(data.getGoodname());
+        Storage storage = storageService.getById(data.getStorage());
+        if (storage != null){
+            vo.setStorageName(storage.getName());
+        }
+        Goodstype goodstype = goodstypeService.getById(data.getGoodstype());
+        if (goodstype != null){
+            vo.setGoodsTypeName(goodstype.getName());
+        }
+        User admin = userService.getById(data.getAdminId());
+        if (admin != null){
+            vo.setAdminName(admin.getName());
+        }
+        User user = userService.getById(data.getUserid());
+        if (user != null){
+            vo.setUserName(user.getName());
+        }
+        Customer customer = customerService.getById(data.getCustomerid());
+        if (customer != null){
+            vo.setCustomerName(customer.getCustomerName());
+        }
+        vo.setCount(data.getCount());
+        vo.setCreateTime(data.getCreatetime());
+        vo.setRemark(data.getRemark());
+        return vo;
+    }
 }

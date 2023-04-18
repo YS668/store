@@ -1,13 +1,10 @@
 package com.sms.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,16 +12,16 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 
+ * 出库表
  * </p>
  *
  * @author sms
- * @since 2022-11-11
+ * @since 2023-04-17
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Record对象", description="")
-public class Record implements Serializable {
+@ApiModel(value="OutRec对象", description="出库表")
+public class OutRec implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,26 +32,37 @@ public class Record implements Serializable {
     @ApiModelProperty(value = "货品id")
     private Integer goods;
 
-    @ApiModelProperty(value = "取货人/补货人")
+    @ApiModelProperty(value = "货品名称")
+    @TableField("goodName")
+    private String goodname;
+
+    @ApiModelProperty(value = "货品类别id")
+    @TableField("goodsType")
+    private Integer goodstype;
+
+    @ApiModelProperty(value = "仓库id")
+    @TableField("storage")
+    private Integer storage;
+
+    @ApiModelProperty(value = "客户id")
+    @TableField("customerId")
+    private Integer customerid;
+
+    @ApiModelProperty(value = "销售id")
     @TableField("userId")
     private Integer userid;
 
-    @ApiModelProperty(value = "操作人id")
+    @ApiModelProperty(value = "管理人id")
     private Integer adminId;
 
     @ApiModelProperty(value = "数量")
     private Integer count;
 
     @ApiModelProperty(value = "操作时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createtime;
 
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    /**表中不存在*/
-    @TableField(exist = false)
-    private String action;
 
 }

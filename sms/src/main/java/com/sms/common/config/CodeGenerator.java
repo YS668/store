@@ -1,4 +1,4 @@
-package com.sms.common.utils;
+package com.sms.common.config;
 
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -43,7 +43,7 @@ public class CodeGenerator {
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        String projectPath = System.getProperty("user.dir");
+        String projectPath = System.getProperty("user.dir")+"/sms";
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor("sms");
         gc.setOpen(false);
@@ -57,8 +57,8 @@ public class CodeGenerator {
         DataSourceConfig dsc = new DataSourceConfig();
         // ⼀、修改数据源
         dsc.setUrl("jdbc:mysql://localhost:3306/sms?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false&serverTimezone=UTC&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true");
-                // dsc.setSchemaName("public");
-                dsc.setDriverName("com.mysql.cj.jdbc.Driver");
+        // dsc.setSchemaName("public");
+        dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("123");
         mpg.setDataSource(dsc);
@@ -96,22 +96,22 @@ public class CodeGenerator {
                         StringPool.DOT_XML;
             }
         });
-//
-// cfg.setFileCreate(new IFileCreate() {
-// @Override
-// public boolean isCreate(ConfigBuilder configBuilder, FileType fileType,
-//String filePath) {
-// // 判断⾃定义⽂件夹是否需要创建
-// checkDir("调⽤默认⽅法创建的⽬录，⾃定义⽬录⽤");
-// if (fileType == FileType.MAPPER) {
-// // 已经⽣成 mapper ⽂件判断存在，不想重新⽣成返回 false
-// return !new File(filePath).exists();
-// }
-// // 允许⽣成模板⽂件
-// return true;
-// }
-// });
-//
+ /*
+ cfg.setFileCreate(new IFileCreate() {
+ @Override
+ public boolean isCreate(ConfigBuilder configBuilder, FileType fileType,
+String filePath) {
+ // 判断⾃定义⽂件夹是否需要创建
+ checkDir("调⽤默认⽅法创建的⽬录，⾃定义⽬录⽤");
+ if (fileType == FileType.MAPPER) {
+ // 已经⽣成 mapper ⽂件判断存在，不想重新⽣成返回 false
+ return !new File(filePath).exists();
+ }
+ // 允许⽣成模板⽂件
+ return true;
+ }
+ });
+ */
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
         // 配置模板
